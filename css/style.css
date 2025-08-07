@@ -1,7 +1,12 @@
 .pokemon-button {
-    background-color: #e0ebeb;
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 5px;
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ef5350;
+    color: white;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
   }
+  
