@@ -1,83 +1,12 @@
-html,
-body {
-  font-family: Arial, sans-serif;
-}
-/* button style */
 .pokemon-button {
-  margin: 4px;
-}
-.pokemon-button {
-  display: block;
-  width: 10%;
-  padding: 10px 0;
-  font-size: 14px;
-  font-weight: bold;
-  text-transform: uppercase;
-  background-color: #fff;
-  border: 2px solid #000;
-  border-radius: 4px;
-  cursor: grabbing;
-}
- /* hover effect */
-.pokemon-button:hover {
-  background-color: #f2f2f2;
-}
-
-/* centers the modal */
-#modal-container {
-  position: fixed;
-  padding: 20px;
-  box-sizing: border-box;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  /* on top of page content */
-  overflow: auto;
-  /* scroll if modal is tall */
-  display: grid;
-  text-align: center;
-  display: none;
-}
-#modal-container.is-visible {
-  display: block;
-}
-.modal {
-  margin: auto;
-  display: inline-block;
-  box-sizing: border-box;
-  background: #fff;
-  padding: 15px;
-  width: 100%;
-  max-width: 700px;
-  text-align: left;
-}
-/* Close button */
-.modal-close {
-  float: right;
-  appearance: none;
-  -webkit-appearance: none;
-  border: 0;
-  background: none;
-  color: #777;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-/* Headings and text spacing */
-.modal h1 {
-  margin-top: 0;
-}
-
-.modal p {
-  margin-bottom: 0;
-}
-/* Responsive image inside modal */
-.modal img,
-.modal .modal-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ef5350;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
