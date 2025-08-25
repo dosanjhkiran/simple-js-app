@@ -1,12 +1,14 @@
+html, body {
+  font-family: Arial, sans-serif;
+}
+
+
 .pokemon-button {
-    display: block;
-    margin: 10px auto;
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #ef5350;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+  margin: 4px
   
+}
+  
+.pokemon-button:hover {
+  background-color: #9d4646;
+  cursor: grabbing;
+}
