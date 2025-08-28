@@ -17,7 +17,12 @@ let pokemonRepository = (function () {
   // Create one list item with a Details button
   function addListItem(pokemon) {
     const li = document.createElement('li');
-    li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+    li.classList.add(
+      'list-group-item',
+      'd-flex',
+      'justify-content-between',
+      'align-items-center'
+);
 
     const nameSpan = document.createElement('span');
     nameSpan.textContent = capitalize(pokemon.name);
@@ -30,7 +35,10 @@ let pokemonRepository = (function () {
     button.setAttribute('data-bs-target', '#detailsModal');
 
     // ★ Accessibility requirement:
-    button.setAttribute('aria-label', `Details for ${capitalize(pokemon.name)}`);
+    button.setAttribute(
+      'aria-label',
+      `Details for ${capitalize(pokemon.name)}`
+    );
 
     button.addEventListener('click', () => showDetails(pokemon));
 
