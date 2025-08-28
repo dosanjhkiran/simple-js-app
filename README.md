@@ -15,6 +15,7 @@ Users can click on a Pokémon name to view its details (name, height, and image)
 - CSS
 - JavaScript
 - PokéAPI
+- Bootstrap 5
 
 ## How to Run
 1. Clone or download the repository.
@@ -22,3 +23,4 @@ Users can click on a Pokémon name to view its details (name, height, and image)
 
 ## Credits
 - Pokémon data provided by [PokéAPI]('https://pokeapi.co/api/v2/pokemon/?limit=150').
+- Bootstrap ('https://getbootstrap.com/')

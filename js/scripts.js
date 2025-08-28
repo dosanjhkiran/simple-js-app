@@ -2,7 +2,6 @@ let pokemonRepository = (function () {
   const pokemonList = [];
   const apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
 
-
   const listEl = document.getElementById('pokemon-list');
   const modalTitleEl = document.getElementById('detailsModalLabel');
   const modalBodyEl = document.getElementById('detailsModalBody');
@@ -15,22 +14,14 @@ let pokemonRepository = (function () {
     return pokemonList;
   }
 
-  // Bootstrap list-group item with a button that opens the modal
+  // Create one list item with a Details button
   function addListItem(pokemon) {
-    
     const li = document.createElement('li');
-    li.classList.add(
-      'list-group-item',
-      'd-flex',
-      'justify-content-between',
-      'align-items-center'
-    );
+    li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
 
-    // Name label
     const nameSpan = document.createElement('span');
     nameSpan.textContent = capitalize(pokemon.name);
 
-    // Button: Bootstrap styles + data attributes to toggle modal
     const button = document.createElement('button');
     button.type = 'button';
     button.classList.add('btn', 'btn-primary', 'btn-sm');
@@ -38,7 +29,9 @@ let pokemonRepository = (function () {
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#detailsModal');
 
-    // On click, fill modal content 
+    // ★ Accessibility requirement:
+    button.setAttribute('aria-label', `Details for ${capitalize(pokemon.name)}`);
+
     button.addEventListener('click', () => showDetails(pokemon));
 
     li.appendChild(nameSpan);
@@ -69,24 +62,19 @@ let pokemonRepository = (function () {
       .catch((e) => console.error(e));
   }
 
-  // UI: load details 
+  // UI: load details into the modal
   function showDetails(pokemon) {
     loadDetails(pokemon).then(() => {
       const meters = (pokemon.height / 10).toFixed(1);
 
-      // Title
       modalTitleEl.textContent = capitalize(pokemon.name);
-
-      // Body (clear previous content)
       modalBodyEl.innerHTML = '';
 
-      // Image
       const img = document.createElement('img');
       img.src = pokemon.imageUrl || '';
-      img.alt = `${pokemon.name} sprite`;
+      img.alt = `${capitalize(pokemon.name)} sprite`;
       img.classList.add('img-fluid', 'rounded', 'mb-3');
 
-      // Info
       const p1 = document.createElement('p');
       p1.textContent = `Height: ${meters} m`;
 
@@ -101,13 +89,7 @@ let pokemonRepository = (function () {
     return str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
   }
 
-  return {
-    add,
-    getAll,
-    loadList,
-    loadDetails,
-    addListItem
-  };
+  return { add, getAll, loadList, loadDetails, addListItem };
 })();
 
 // Init
