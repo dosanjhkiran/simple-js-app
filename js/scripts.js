@@ -22,7 +22,7 @@ let pokemonRepository = (function () {
       'd-flex',
       'justify-content-between',
       'align-items-center'
-);
+    );
 
     const nameSpan = document.createElement('span');
     nameSpan.textContent = capitalize(pokemon.name);
@@ -34,13 +34,18 @@ let pokemonRepository = (function () {
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#detailsModal');
 
-    // ★ Accessibility requirement:
-    button.setAttribute(
-      'aria-label',
-      `Details for ${capitalize(pokemon.name)}`
-    );
+    // Accessibility
+    button.setAttribute('aria-label', `Details for ${capitalize(pokemon.name)}`);
 
-    button.addEventListener('click', () => showDetails(pokemon));
+    button.addEventListener('click', async () => {
+      // Prevent double-trigger while loading
+      button.disabled = true;
+      try {
+        await showDetails(pokemon);
+      } finally {
+        button.disabled = false;
+      }
+    });
 
     li.appendChild(nameSpan);
     li.appendChild(button);
@@ -60,6 +65,11 @@ let pokemonRepository = (function () {
   }
 
   function loadDetails(pokemon) {
+    // Simple cache: if already loaded, skip fetch
+    if (pokemon.height && pokemon.types && pokemon.imageUrl) {
+      return Promise.resolve();
+    }
+
     return fetch(pokemon.detailsUrl)
       .then((response) => response.json())
       .then((details) => {
@@ -70,27 +80,84 @@ let pokemonRepository = (function () {
       .catch((e) => console.error(e));
   }
 
-  // UI: load details into the modal
-  function showDetails(pokemon) {
-    loadDetails(pokemon).then(() => {
-      const meters = (pokemon.height / 10).toFixed(1);
+  // --- UI helpers for modal ---
 
-      modalTitleEl.textContent = capitalize(pokemon.name);
-      modalBodyEl.innerHTML = '';
+  function renderLoading(pokemon) {
+    modalTitleEl.textContent = `Loading ${capitalize(pokemon.name)}…`;
+    modalBodyEl.setAttribute('aria-busy', 'true');
 
-      const img = document.createElement('img');
-      img.src = pokemon.imageUrl || '';
-      img.alt = `${capitalize(pokemon.name)} sprite`;
-      img.classList.add('img-fluid', 'rounded', 'mb-3');
+    // Structure matches the final layout to avoid shifts
+    modalBodyEl.innerHTML = `
+      <div class="poke-grid">
+        <div class="poke-art">
+          <div class="spinner-border" role="status" aria-label="Loading"></div>
+        </div>
+        <div>
+          <div class="skeleton skel-line" style="width: 60%"></div>
+          <div class="skeleton skel-line" style="width: 40%"></div>
+          <div class="skeleton skel-line" style="width: 80%"></div>
+          <div class="skeleton skel-line" style="width: 50%"></div>
+        </div>
+      </div>
+    `;
+  }
 
-      const p1 = document.createElement('p');
-      p1.textContent = `Height: ${meters} m`;
-
-      const p2 = document.createElement('p');
-      p2.textContent = `Types: ${pokemon.types.join(', ')}`;
-
-      modalBodyEl.append(img, p1, p2);
+  function preloadImage(src) {
+    return new Promise((resolve, reject) => {
+      if (!src) return resolve(null);
+      const img = new Image();
+      img.onload = () => resolve(src);
+      img.onerror = reject;
+      img.src = src;
     });
+  }
+
+  function renderDetails(pokemon, preloadedSrc) {
+    const meters = (pokemon.height / 10).toFixed(1);
+    modalTitleEl.textContent = capitalize(pokemon.name);
+
+    const types = (pokemon.types && pokemon.types.length)
+      ? pokemon.types.join(', ')
+      : 'Unknown';
+
+    modalBodyEl.innerHTML = `
+      <div class="poke-grid">
+        <div class="poke-art">
+          ${
+            preloadedSrc
+              ? `<img src="${preloadedSrc}" alt="${capitalize(pokemon.name)} sprite" class="img-fluid rounded">`
+              : `<div class="text-muted">No image</div>`
+          }
+        </div>
+        <div>
+          <p class="mb-1"><strong>Height:</strong> ${meters} m</p>
+          <p class="mb-1"><strong>Types:</strong> ${types}</p>
+        </div>
+      </div>
+    `;
+
+    modalBodyEl.removeAttribute('aria-busy');
+  }
+
+  async function showDetails(pokemon) {
+    // Show loading UI immediately (before network)
+    renderLoading(pokemon);
+
+    try {
+      await loadDetails(pokemon);
+      // Preload image so it doesn’t “pop in”
+      const src = await preloadImage(pokemon.imageUrl).catch(() => null);
+      renderDetails(pokemon, src);
+    } catch (e) {
+      console.error(e);
+      modalTitleEl.textContent = 'Error loading details';
+      modalBodyEl.innerHTML = `
+        <div class="alert alert-danger" role="alert">
+          Could not load details. Please try again.
+        </div>
+      `;
+      modalBodyEl.removeAttribute('aria-busy');
+    }
   }
 
   function capitalize(str) {
